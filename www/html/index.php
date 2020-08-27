@@ -29,9 +29,6 @@ $middleware($app);
 $routes = require __DIR__ . '/../slim3/src/routes.php';
 $routes($app);
 
-// Controllers
-require __DIR__ . '/../slim3/Controllers/SampleController.php';
-
 // form関連
 require __DIR__ . '/../slim3/Controllers/FormController.php';
 $form = require __DIR__ . '/../slim3/config/form.php';
