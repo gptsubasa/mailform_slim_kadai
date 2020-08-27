@@ -3,5 +3,12 @@
 use Slim\App;
 
 return function (App $app) {
-    // e.g: $app->add(new \Slim\Csrf\Guard);
+    $container = $app->getContainer();
+
+    $guard = $container->get('csrf');
+    $guard->setFailureCallable(function ($request, $response, $next) {
+        $request = $request->withAttribute("csrf_status", false);
+        return $next($request, $response);
+    });
+    $app->add($guard);
 };

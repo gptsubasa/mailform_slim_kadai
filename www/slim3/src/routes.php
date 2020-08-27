@@ -15,19 +15,9 @@ return function (App $app) {
         );
     };
 
-    $app->get('/hello/{name}', SampleController::class . ':index');
-
     // フォーム
     $app->group('/form', function () {
-        $this->get('', FormController::class . ':input');
+        $this->get('', FormController::class . ':input')->setName('input');
+        $this->post('/confirm', FormController::class . ':confirm')->setName('confirm');
     });
-
-
-    // $app->get('/[{name}]', function (Request $request, Response $response, array $args) use ($container) {
-    //     // Sample log message
-    //     $container->get('logger')->info("Slim-Skeleton '/' route");
-
-    //     // Render index view
-    //     return $container->get('renderer')->render($response, 'index.phtml', $args);
-    // });
 };

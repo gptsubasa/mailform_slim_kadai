@@ -19,4 +19,19 @@ return function (App $app) {
         $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
         return $logger;
     };
+
+    // validator
+    $container['validator'] = function () {
+        return new Awurth\SlimValidation\Validator();
+    };
+
+    // flash message
+    $container['flash'] = function () {
+        return new \Slim\Flash\Messages();
+    };
+
+    // CSRF
+    $container['csrf'] = function ($c) {
+        return new \Slim\Csrf\Guard;
+    };
 };

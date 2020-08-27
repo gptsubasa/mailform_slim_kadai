@@ -21,5 +21,6 @@ templates_c/*
 data/*
 log/*
 docker/mysql/storage/*
+www/slim3/resources/cache/*
 !.gitkeep
 .idea

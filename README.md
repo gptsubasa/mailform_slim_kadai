@@ -1,21 +1,55 @@
-# 【課題】メールフォーム
+# Slim mailform
 
-## 概要
-
-送付先入力フォームの「入力」「確認」「完了」ページのコーディングを用意しています。
-社内メールフォームリポジトリを使わず、メールフォームを実装してください。
-
-## 仮想環境構築
+## 構成
 
 ```
-# ビルド
-$ docker-compose build
+.
+├─html
+│  └─index.php
+└─slim3
+    ├─config
+    ├─Controllers
+    │  └─FormController.php             : formのコントローラー
+    ├─logs
+    ├─resources
+    │  ├─cache
+    │  └─views                          : テンプレートファイル
+    │      ├─form
+    │      │  ├─complete.blade.php
+    │      │  ├─confirm.blade.php
+    │      │  └─input.blade.php
+    │      └─layouts
+    │          ├─app.blade.php
+    │          ├─footer.blade.php
+    │          ├─head.blade.php
+    │          └─header.blade.php
+    ├─src
+    │  ├─dependencies.php               : 依存関係を設定(logger,templateエンジン)
+    │  ├─middleware.php                 : レスポンスとMVC処理の間に挟まる処理(CSRF)
+    │  ├─routes.php                     : ルーティングの設定
+    │  └─settings.php                   : 設定関連
+    └─vendor
 
-# 起動 ※ -d オプションはバックグラウンドで実行
-$ docker-compose up -d
 ```
 
-## 作業手順
+## require
+
+```
+"slim/slim": "^3.1"
+"rubellum/slim-blade-view": "^0.1.1",
+"awurth/slim-validation": "^3.3",
+"slim/flash": "^0.4.0",
+"slim/csrf": "0.8.3",
+```
+
+## POINT
+
+* テンプレートエンジン ⇒ blade追加
+* validation => awurth/slim-validation
+* エラー戻り => flash message
+* csrf => slim/csrf
+
+## 作業履歴
 
 ```
 # 仮想環境にbashログイン
@@ -27,18 +61,15 @@ $ composer create-project "slim/slim-skeleton=3.1.8" slim3
 # テンプレートエンジンをbladeに変更
 $ cd slim3
 $ composer require rubellum/slim-blade-view
-$ composer require "laravelcollective/html"
 
-# 初期化
-$ cd laravel
-$ php artisan key:generate
+# validation 追加
+$ composer require awurth/slim-validation
 
-# base path 変更
-/laravel/public/index.php => /html/index.php
-/laravel/server.php
+# flash message追加
+$ composer require slim/flash
 
-# Laravel Collective追加（Formファサード）
-$composer requrie "laravelcollective/html"
+# csrf
+$ composer require slim/csrf:0.8.3
 ```
 
 ## 参考サイト
@@ -46,93 +77,6 @@ $composer requrie "laravelcollective/html"
 * [Slim 3 Documentation](http://www.slimframework.com/docs/v3/)
 * [Slim 3 Install](https://akiyamada2020.hatenablog.com/entry/20191222/1577018860)
 * [PHP軽量FrameworkのSlim3](https://qiita.com/Syo_pr/items/b55e18a8361b3ff882b5)
+* [flash message](http://www.slimframework.com/docs/v3/features/flash.html)
 
-## サンクスメール文言
 
-```
-【件名】
-ご応募いただきありがとうございます。
-
-【本文】
-GP 太郎様
-
-この度は、「オリジナルデザイングッズ」にお申込みいただき誠にありがとうございます。
-
-以下の内容でご応募を受け付け致しました。
-
-===================================
-
-【お名前】：GP 太郎
-【フリガナ】：ジーピー タロウ
-【ご住所】：530-0004 大阪府大阪市北区堂島浜 堂島アクシスビル3F
-【メールアドレス】：test@gpol.co.jp
-【電話番号】：06-6343-9363
-
-===================================
-
-【あなたは、このキャンペーンをどこでお知りになりましたか】
-店頭装飾を見つけて
-
-【この商品を購入した理由をお教えください】
-・特売していたから
-・その他（入力項目が入ります。）
-
-===================================
-
-賞品はキャンペーン終了後、2ヶ月以内に発送いたします。
-賞品の到着まで今しばらくお待ちくださいませ。
-
-※本メールにお心あたりのない場合、大変お手数ではございますが、
-上記お問い合わせ先へご連絡くださいますようお願い申し上げます。
-
-──────────────────────────────
-キャンペーン事務局06-0000-0000
-
-受付時間：平日 10：00～17：00（土・日・祝日を除く）
-──────────────────────────────
-```
-
-## バリデート文言サンプル
-
-```
-# お名前
-お名前(姓)を入力してください。
-お名前(姓)は12文字以内を入力してください。
-お名前(名)を入力してください。
-お名前(名)は12文字以内を入力してください。
-
-# フリガナ
-フリガナ(セイ)を入力してください。
-フリガナ(セイ)をカタカナ入力してください。
-フリガナ(セイ)は12文字以内を入力してください。
-フリガナ(メイ)を入力してください。
-フリガナ(メイ)をカタカナ入力してください。
-フリガナ(メイ)は12文字以内を入力してください。
-
-# 住所
-郵便番号を入力してください。
-郵便番号を正しく入力してください。
-都道府県を選択してください。
-都道府県を正しく選択してください。
-市区町村番地を入力してください。
-市区町村番地は90文字以内を入力してください。
-建物名・号室は90文字以内を入力してください。
-
-# メールアドレス
-メールアドレスを入力してください。
-メールアドレスを正しく入力してください。
-メールアドレスは100文字以内を入力してください。
-
-# 電話番号
-電話番号を入力してください。
-電話番号を正しく入力してください。
-
-# アンケート
-選択してください。
-正しく選択してください。
-その他ご記入の際は、「その他」を選択してください。
-「その他」は100文字以内を入力してください。
-
-# 同意
-ご利用規約に同意が必要です。
-```

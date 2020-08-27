@@ -24,13 +24,20 @@
 @section('content')
 		<section id="contentsBox" class="form input">
 			<div class="inner">
-				<form method="post" class="clr" action="./">
+				<form method="post" class="clr" action="/form/confirm">
+					<input type="hidden" name="csrf_name" value="{{ $csrf_name }}">
+					<input type="hidden" name="csrf_value" value="{{ $csrf_value }}">
 					<h2 class="ttl2">
 						送付先入力フォーム
 					</h2>
 					<p class="lead">当選賞品の送付先をご入力ください。 
 						<span class="note">ご入力いただいた情報に誤りがございますと、賞品が届かない場合がございますのでご注意ください。</span>
 					</p>
+                    @isset($errors['csrf'])
+                    <div class="errorBox">
+						<p>{!! $errors['csrf'] !!}</p>
+                    </div>
+                    @endisset
 					<div class="formBox">
 						<table>
 							<tr>
@@ -47,8 +54,8 @@
 										<input type="text" name="name_mei" value="" placeholder="太郎" class="size1" maxlength="12">
 									</p>
 									<span>
-										<b class="errorTxt">お名前（姓）を入力してください。</b>
-										<b class="errorTxt">お名前（名）を入力してください。</b>
+										@isset($errors['name_sei'])<b class="errorTxt">{{ $errors['name_sei'][0]}}</b>@endisset
+										@isset($errors['name_mei'])<b class="errorTxt">{{ $errors['name_mei'][0]}}</b>@endisset
 									</span>
 								</td>
 							</tr>
